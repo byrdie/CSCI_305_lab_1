@@ -1,14 +1,14 @@
 ######################################### 	
 #    CSCI 305 - Programming Lab #1		
 #										
-#  < Replace with your Name >			
-#  < Replace with your Email >			
+#  < Roy Smart >			
+#  < roytsmart@gmail.com >			
 #										
 #########################################
 
 # Replace the string value of the following variable with your names.
-my $name = "<Replace with your name>";
-my $partner = "<Replace with your partner's name>";
+my $name = "<Roy Smart>";
+my $partner = "<Nevin Leh>";
 print "CSCI 305 Lab 1 submitted by $name and $partner.\n\n";
 
 # Checks for the argument, fail if none given
@@ -25,6 +25,8 @@ open(INFILE, $ARGV[0]) or die "Cannot open $ARGV[0]: $!.\n";
 
 # This loops through each line of the file
 while($line = <INFILE>) {
+
+	
 
 	# This prints each line. You will not want to keep this line.
 	print $line;
