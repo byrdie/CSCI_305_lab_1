@@ -22,7 +22,8 @@ open(INFILE, $ARGV[0]) or die "Cannot open $ARGV[0]: $!.\n";
 
 
 # YOUR VARIABLE DEFINITIONS HERE...
-
+$title_count = 0;
+@word_list;
 
 # This loops through each line of the file
 while($line = <INFILE>) {
@@ -39,22 +40,25 @@ while($line = <INFILE>) {
 	#Eliminate punctuation, Lab Step 3
 	$title =~ s/[\?\xBF\!\xA1\.;&\$\@%#\|]+//g;
 
-	#Filter titles with non-English characters, Lab Step 4
+	#Don't include any titles with non-English characters, Lab Step 4
 	 if($title =~ /.*[^'\w\s'].*/){
-	 	$title = "";
+	 	$title = "";	
+	 } else {
+
+	 	#Convert all titles to lower case, Lab Step 5
+	 	$title = lc $title;
+
+	 	#Divide each title up into separate words
+	 	my @words = split " ", $title;
+	 	
+
+	 	print $title . "\n";
+	 	$title_count++;
 	 }
-	
-
-
-
-
-
-	# This prints each line. You will not want to keep this line.
-	print $title . "\n";
-	
-	# YOUR CODE BELOW...
 }
 
+#Print out the number of titles we found
+print $title_count . "\n";
 
 # Close the file handle
 close INFILE; 
