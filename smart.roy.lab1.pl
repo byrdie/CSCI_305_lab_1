@@ -23,7 +23,9 @@ open(INFILE, $ARGV[0]) or die "Cannot open $ARGV[0]: $!.\n";
 
 # YOUR VARIABLE DEFINITIONS HERE...
 $title_count = 0;
-@word_list;
+%word_hashtable;
+@bigram_hash_array;
+
 
 # This loops through each line of the file
 while($line = <INFILE>) {
@@ -49,7 +51,7 @@ while($line = <INFILE>) {
 	 	$title = lc $title;
 
 	 	#Divide each title up into separate words
-	 	my @words = split " ", $title;
+	 	
 	 	
 
 	 	print $title . "\n";
@@ -80,3 +82,13 @@ while ($input ne "q"){
 }
 
 # MORE OF YOUR CODE HERE....
+
+
+##Subroutine  declaration
+
+#Need a list of words as a parameter
+sub add_line_to_hashtable {
+	my ($song_title) = @_;
+	my @words = split " ", $song_title;
+
+}
