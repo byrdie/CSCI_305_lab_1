@@ -22,19 +22,40 @@ open(INFILE, $ARGV[0]) or die "Cannot open $ARGV[0]: $!.\n";
 
 
 # YOUR VARIABLE DEFINITIONS HERE...
+$i = 0;
 
 # This loops through each line of the file
 while($line = <INFILE>) {
 
-	if($line =~ /(.*)<.*?>(.*)<.*?>(.*)<.*?>(.*)/){
+	if($line =~ /(.*)<.*?>(.*)<.*?>(.*)<.*?>(.*)/){		#There are 3 "<>" pairs in the file, only keep the end
 		$title = $4;
 	}
 
+	#Eliminate text after these characters, per lab step 2
+	$title =~ s/\(.*//;
+	$title =~ s/\[.*//;
+	$title =~ s/\{.*//;
+	$title =~ s/\\.*//;
+	$title =~ s/\/.*//;
+	$title =~ s/\_.*//;
+	$title =~ s/\-.*//;
+	$title =~ s/\:.*//;
+	$title =~ s/\".*//;
+	$title =~ s/\`.*//;
+	$title =~ s/\+.*//;
+	$title =~ s/\=.*//;
+	$title =~ s/\*.*//;
+	$title =~ s/feat.*//;
+
+
+
 	# This prints each line. You will not want to keep this line.
 	print $title . "\n";
-
+	
 	# YOUR CODE BELOW...
 }
+
+print $i. "\n";
 
 # Close the file handle
 close INFILE; 
