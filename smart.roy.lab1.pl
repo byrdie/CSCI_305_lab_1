@@ -26,10 +26,12 @@ open(INFILE, $ARGV[0]) or die "Cannot open $ARGV[0]: $!.\n";
 # This loops through each line of the file
 while($line = <INFILE>) {
 
-	
+	if($line =~ /(.*)<.*?>(.*)<.*?>(.*)<.*?>(.*)/){
+		$title = $4;
+	}
 
 	# This prints each line. You will not want to keep this line.
-	print $line;
+	print $title . "\n";
 
 	# YOUR CODE BELOW...
 }
