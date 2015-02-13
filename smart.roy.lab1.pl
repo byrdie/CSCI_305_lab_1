@@ -22,30 +22,30 @@ open(INFILE, $ARGV[0]) or die "Cannot open $ARGV[0]: $!.\n";
 
 
 # YOUR VARIABLE DEFINITIONS HERE...
-$i = 0;
+
 
 # This loops through each line of the file
 while($line = <INFILE>) {
 
-	if($line =~ /(.*)<.*?>(.*)<.*?>(.*)<.*?>(.*)/){		#There are 3 "<>" pairs in the file, only keep the end
+	#There are 3 "<>" pairs in the file, only keep the end
+	if($line =~ /(.*)<.*?>(.*)<.*?>(.*)<.*?>(.*)/){		
 		$title = $4;
 	}
 
 	#Eliminate text after these characters, per lab step 2
-	$title =~ s/\(.*//;
-	$title =~ s/\[.*//;
-	$title =~ s/\{.*//;
-	$title =~ s/\\.*//;
-	$title =~ s/\/.*//;
-	$title =~ s/\_.*//;
-	$title =~ s/\-.*//;
-	$title =~ s/\:.*//;
-	$title =~ s/\".*//;
-	$title =~ s/\`.*//;
-	$title =~ s/\+.*//;
-	$title =~ s/\=.*//;
-	$title =~ s/\*.*//;
+	$title =~ s/[\(\[\{\\\/\_\-\:\"\`\+\=\*]+.*//;
 	$title =~ s/feat.*//;
+
+	#Eliminate punctuation, Lab Step 3
+	$title =~ s/[\?\xBF\!\xA1\.;&\$\@%#\|]+//g;
+
+	#Filter titles with non-English characters, Lab Step 4
+	 if($title =~ /.*[^'\w\s'].*/){
+	 	$title = "";
+	 }
+	
+
+
 
 
 
@@ -55,7 +55,6 @@ while($line = <INFILE>) {
 	# YOUR CODE BELOW...
 }
 
-print $i. "\n";
 
 # Close the file handle
 close INFILE; 
