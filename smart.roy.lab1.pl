@@ -6,6 +6,9 @@
 #										
 #########################################
 
+use strict;
+use warnings;
+
 # Replace the string value of the following variable with your names.
 my $name = "<Roy Smart>";
 my $partner = "<Nevin Leh>";
@@ -22,41 +25,45 @@ open(INFILE, $ARGV[0]) or die "Cannot open $ARGV[0]: $!.\n";
 
 
 # YOUR VARIABLE DEFINITIONS HERE...
-$title_count = 0;
-%word_hashtable;
-@bigram_hash_array;
+my $title_count = 0;
+my %word_hashtable;
+my @bigram_hash_array;
+my $bigram_hash_index;
 
 
 # This loops through each line of the file
-while($line = <INFILE>) {
+while(my $line = <INFILE>) {
 
-	#There are 3 "<>" pairs in the file, only keep the end
+	#There are 3 "<>" pairs in the file, only keep the end. Only use valid lines for song titles
 	if($line =~ /(.*)<.*?>(.*)<.*?>(.*)<.*?>(.*)/){		
-		$title = $4;
+		my $title = $4;
+
+		#Eliminate text after these characters, per lab step 2
+		$title =~ s/[\(\[\{\\\/\_\-\:\"\`\+\=\*]+.*//;
+		$title =~ s/feat.*//;
+
+		#Eliminate punctuation, Lab Step 3
+		$title =~ s/[\?\xBF\!\xA1\.;&\$\@%#\|]+//g;
+
+		#Don't include any titles with non-English characters, Lab Step 4
+		 if($title =~ /.*[^'\w\s'].*/){
+	 		$title = "";	# Unneeded statement, should probably figure out how to fix this
+		 } else {
+
+		 	#Convert all titles to lower case, Lab Step 5
+		 	$title = lc $title;
+
+		 	#Divide each title up into separate words
+	 	
+	 	
+
+	 		print $title . "\n";
+	 		$title_count++;
+	 	}
+
 	}
 
-	#Eliminate text after these characters, per lab step 2
-	$title =~ s/[\(\[\{\\\/\_\-\:\"\`\+\=\*]+.*//;
-	$title =~ s/feat.*//;
-
-	#Eliminate punctuation, Lab Step 3
-	$title =~ s/[\?\xBF\!\xA1\.;&\$\@%#\|]+//g;
-
-	#Don't include any titles with non-English characters, Lab Step 4
-	 if($title =~ /.*[^'\w\s'].*/){
-	 	$title = "";	
-	 } else {
-
-	 	#Convert all titles to lower case, Lab Step 5
-	 	$title = lc $title;
-
-	 	#Divide each title up into separate words
-	 	
-	 	
-
-	 	print $title . "\n";
-	 	$title_count++;
-	 }
+	
 }
 
 #Print out the number of titles we found
@@ -72,7 +79,7 @@ print "File parsed. Bigram model built.\n\n";
 
 # User control loop
 print "Enter a word [Enter 'q' to quit]: ";
-$input = <STDIN>;
+my $input = <STDIN>;
 chomp($input);
 print "\n";	
 while ($input ne "q"){
@@ -81,14 +88,40 @@ while ($input ne "q"){
 	$input = 'q';
 }
 
-# MORE OF YOUR CODE HERE....
 
 
-##Subroutine  declaration
+## Subroutine  declaration
 
-#Need a list of words as a parameter
+# Puts bigrams into double hash array to analyze bigram frequency.
+# The double hash array consists of one hash table containing all the words in the data set.
+# And another array of hash tables that contain the associated bigrams for all the words in data set. 
+#The values in the second hashtable correspond to frequecies of various bigrams.
+# Need a list of words as a parameter
 sub add_line_to_hashtable {
 	my ($song_title) = @_;
-	my @words = split " ", $song_title;
+	my @words = split " ", $song_title;		# Split up song title into separate words to add to hashtable
+	for (my $i = 0; $i < (0 + @words); $i++){
 
+		#grab the this and next word from the song title
+		my $this_word = $words[$i];
+		my $next_word = $words[$i + 1];
+
+		# Check to see if word is already in the hash table.
+		my $hash_value = $word_hashtable{$this_word}
+		if(defined $hash_value){				# If so, put next word into second hashtable
+
+			# Check to see if the next word in the bigram is in the second hash table
+			my $freq_count = $bigram_hash_array[$hash_value]{$next_word};
+			if(defined $freq_count){	# If the bigram is already present, increment the frequency counter
+				$bigram_hash_array[$hash_value] = $freq_count + 1;
+			} else {			# Otherwise add the next word to the second hash table.
+				$bigram_hash_array[$hash_value] = 0;	# Initialize frequency counter to zero
+			}
+
+		} else	{	# If not put word into first hashtable, and select new second hastable from array
+			$word_hashtable{$this_word} = $bigram_hash_index;	# set value to the index of the second hash table in the array
+			$bigram_hash_array[$bigram_hash_index]{$next_word} = 0;		# Initialize frequency counter to zero
+			$bigram_hash_index++;								# Increment index of second hashtable array
+		}
+	}
 }
