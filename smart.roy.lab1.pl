@@ -107,7 +107,7 @@ sub add_line_to_hashtable {
 		my $next_word = $words[$i + 1];
 
 		# Check to see if word is already in the hash table.
-		my $hash_value = $word_hashtable{$this_word}
+		my $hash_value = $word_hashtable{$this_word};
 		if(defined $hash_value){				# If so, put next word into second hashtable
 
 			# Check to see if the next word in the bigram is in the second hash table
