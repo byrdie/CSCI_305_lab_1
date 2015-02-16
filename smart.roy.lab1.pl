@@ -28,7 +28,7 @@ open(INFILE, $ARGV[0]) or die "Cannot open $ARGV[0]: $!.\n";
 my $title_count = 0;
 my %word_hashtable;
 my @bigram_hash_array;
-my $bigram_hash_index;
+my $bigram_hash_index = 0;
 
 
 # This loops through each line of the file
@@ -50,20 +50,17 @@ while(my $line = <INFILE>) {
 	 		$title = "";	# Unneeded statement, should probably figure out how to fix this
 		 } else {
 
-		 	#Convert all titles to lower case, Lab Step 5
+		 	# Convert all titles to lower case, Lab Step 5
 		 	$title = lc $title;
-
-		 	#Divide each title up into separate words
-	 	
-	 	
-
+ 	
 	 		print $title . "\n";
+
+			# Add each line to double hash table
+		 	&add_line_to_hashtable($title);	 		
+
 	 		$title_count++;
 	 	}
-
 	}
-
-	
 }
 
 #Print out the number of titles we found
@@ -100,11 +97,16 @@ while ($input ne "q"){
 sub add_line_to_hashtable {
 	my ($song_title) = @_;
 	my @words = split " ", $song_title;		# Split up song title into separate words to add to hashtable
-	for (my $i = 0; $i < (0 + @words); $i++){
+	for (my $i = 0; $i < (0 + @words - 1); $i++){	# Only loop up to second-to-last word
+
+
 
 		#grab the this and next word from the song title
 		my $this_word = $words[$i];
 		my $next_word = $words[$i + 1];
+
+		# print "$this_word $next_word \n";
+
 
 		# Check to see if word is already in the hash table.
 		my $hash_value = $word_hashtable{$this_word};
@@ -112,16 +114,20 @@ sub add_line_to_hashtable {
 
 			# Check to see if the next word in the bigram is in the second hash table
 			my $freq_count = $bigram_hash_array[$hash_value]{$next_word};
+			
 			if(defined $freq_count){	# If the bigram is already present, increment the frequency counter
 				$bigram_hash_array[$hash_value] = $freq_count + 1;
-			} else {			# Otherwise add the next word to the second hash table.
+				print "Flag 1\n";
+			} else {					# Otherwise add the next word to the second hash table.
 				$bigram_hash_array[$hash_value] = 0;	# Initialize frequency counter to zero
+				print "Flag 2\n";
 			}
 
 		} else	{	# If not put word into first hashtable, and select new second hastable from array
 			$word_hashtable{$this_word} = $bigram_hash_index;	# set value to the index of the second hash table in the array
 			$bigram_hash_array[$bigram_hash_index]{$next_word} = 0;		# Initialize frequency counter to zero
 			$bigram_hash_index++;								# Increment index of second hashtable array
+			print "Flag 3\n";
 		}
 	}
 }
