@@ -6,16 +6,88 @@ February 16, 2015
 Question 1: Which word most often follows the word “happy”?
 	The word "birthday" most often follows "happy".
 
+
 Question 2: Which word most often follows the word "sad"?
 	The word "song" most often follows the word "sad".
+
 
 Question 3: How many different (unique) words follow the word "computer"?
 	58 different words follow the word "computer".
 
+
 Question 4: Which word most often follows the word "computer"?
 	The word "love" most often follows the word "computer".
 
+
 Question 5: How many times does this word follow "computer"?
-	The word "love" follows "computer" 12 times.
+	The word "love" follows "computer" 13 times.
+
+
+Question 6: Using the starting word "happy", what song title do you get?
+	happy birthday song for the world is a little girl in the world is a little girl in the world is
+
+
+Question 7: Using the starting word “sad”, what song title do you get?
+	sad song for the world is a little girl in the world is a little girl in the world is a
+
+
+Question 8: Using the starting word “hey”, what song title do you get?
+	hey hey hey hey hey hey hey hey hey hey hey hey hey hey hey hey hey hey hey hey hey
+
+
+Question 9: Using the starting word “little”, what song title do you get?
+	little girl in the world is a little girl in the world is a little girl in the world is a
+
+
+Question 10: Try a few other words. What problem(s) do you see? Which phrase do you most often find recurring in 
+these titles?
+	The output of the program for a few other words is:
+
+		Enter a word [Enter 'q' to quit]: best
+		best of the world is a little girl in the world is a little girl in the world is a little, 20 words
+		Enter a word [Enter 'q' to quit]: great
+		great big city of the world is a little girl in the world is a little girl in the world is, 20 words
+		Enter a word [Enter 'q' to quit]: while
+		while you are you are you are you are you are you are you are you are you are you are, 20 words
+		Enter a word [Enter 'q' to quit]: oh
+		oh my heart of the world is a little girl in the world is a little girl in the world is, 20 words
+		Enter a word [Enter 'q' to quit]: final
+		final countdown to the world is a little girl in the world is a little girl in the world is a, 20 words
+
+	The main problem with the average song title is that it gets into infinite loops. A word will link through one 
+	or more other words back to itself, creating a song title that would never end if it weren't for the twenty
+	word limit. The most common loop starts with the word "the", producing the endless title: "the world is a 
+	little girl in the world...".
+
+
+Question 10 (the second): Using the starting word “amore”, what song title do you get?
+	amore mio babbino caro nome na na na na na na na na na na na na na na na na
+
+
+Question 11: Using the starting word “love”, what song title do you get?
+	love you are you are you are you are you are you are you are you are you are you are
+
+
+Question 12: Using the starting word “little”, what song title do you get?
+	little girl like you are you are you are you are you are you are you are you are you are
+
+
+Question 13: (Bad luck I assume?)
+
+
+Question 14: Explain why so many of the titles devolve into repeating patterns.
+	Many of the titles devolve into repeating patterns because the same word often precedes and follows the next
+	word in the bigram. If a word links to itself through one or more bigrams, it will form a repeating pattern.
+	(From the text of Lab 1, it implies that we should describe a fix for this problem. The best fix would involve 
+	implementing some sort of memory that would know if a word already has an occurance in the average song title.
+	If the word already exists, we would select the next most common word from the bigram double hash table.)
+
+
+Question 15: Try several words. Find a song title that terminates in less than 20 words. Could you find one? If so,
+which song title did you find? If not, why not?
+	A song title that ends in less than 20 words is one that starts with "brush". It produces only a two word song
+	title: "brush arbors".
+
+
 
 
