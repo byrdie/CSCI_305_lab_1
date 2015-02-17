@@ -31,7 +31,6 @@ my $title_count = 0;	# Count of valid titles found in the input file
 my %word_hashtable;		# double hashtable to hold words and their possible bigrams
 my $highest_freq;		# highest frequency occurance of current bigram ()
 
-
 # This loops through each line of the file
 while(my $line = <INFILE>) {
 
@@ -121,7 +120,7 @@ sub add_line_to_hashtable {
 
 
 		#grab the this and next word from the song title
-		#a, an, and, by, for, from, in, of, on, or, out, the, to, with
+		
 		my $this_word = $words[$i];
 		my $next_word = $words[$i + 1];
         my $check_word=$words[$i+1];
