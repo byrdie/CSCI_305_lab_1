@@ -97,15 +97,14 @@ while ($input ne "q"){
 sub add_line_to_hashtable {
 	my ($song_title) = @_;
 	my @words = split " ", $song_title;		# Split up song title into separate words to add to hashtable
-	for (my $i = 0; $i < (0 + @words - 1); $i++){	# Only loop up to second-to-last word
-
+	for (my $i = 1; $i < (0 + @words); $i++){	# Only loop up to second-to-last word
 
 
 		#grab the this and next word from the song title
 		my $this_word = $words[$i];
 		my $next_word = $words[$i + 1];
 
-		# print "$this_word $next_word \n";
+		print "$this_word \n";
 
 
 		# Check to see if word is already in the hash table.
@@ -116,18 +115,23 @@ sub add_line_to_hashtable {
 			my $freq_count = $bigram_hash_array[$hash_value]{$next_word};
 			
 			if(defined $freq_count){	# If the bigram is already present, increment the frequency counter
+				# print "Flag 1\n";
 				$bigram_hash_array[$hash_value] = $freq_count + 1;
-				print "Flag 1\n";
 			} else {					# Otherwise add the next word to the second hash table.
+				# print "Flag 2\n";
 				$bigram_hash_array[$hash_value] = 0;	# Initialize frequency counter to zero
-				print "Flag 2\n";
 			}
 
 		} else	{	# If not put word into first hashtable, and select new second hastable from array
+			# print "Flag 3\n";
 			$word_hashtable{$this_word} = $bigram_hash_index;	# set value to the index of the second hash table in the array
 			$bigram_hash_array[$bigram_hash_index]{$next_word} = 0;		# Initialize frequency counter to zero
 			$bigram_hash_index++;								# Increment index of second hashtable array
-			print "Flag 3\n";
+			
 		}
+
+		my $final_hash_value = $word_hashtable{$this_word} 
+
+
 	}
 }
