@@ -210,10 +210,10 @@ sub mcw {
 
 				# Check if the word has already been used				
 				%used_words = %{$_[1]};	# The reference to the hash table of used words will be passed as an argument
-				if( ! defined $used_words{$key}){		# If the word has NOT already been used
+				#if( ! defined $used_words{$key}){		# If the word has NOT already been used
 					$highest_freq = $freq;		# If so it is the new highest frequency
      				$most_common_word = $key;	# Save the most commmon word for output
-				}
+				#}
 			}
 		} elsif ($freq > $highest_freq){		# Check if this item has the highest frequency
      		$highest_freq = $freq;		# If so it is the new highest frequency
