@@ -178,7 +178,7 @@ sub print_bigrams {
 
 	foreach my $key (keys %{$word_hashtable{$first_word}}){
 		my $bigram_freq = $word_hashtable{$first_word}{$key} + 1;
-		print "    " . $key . "==>" . $bigram_freq . ", ";	# frequency is zero-based so add 1
+		print $key . "==>" . $bigram_freq . ", ";	# frequency is zero-based so add 1
 		$num_bigrams++;
 	}
 
@@ -204,21 +204,20 @@ sub mcw {
 
 		# Determine if the current word has the highest frequency
 		if ($ARGV[1] eq "-d") {		# For the last step, eliminate repeating words
-			if ($freq > $highest_freq){	# Only worry about repeats if the current word is a valid candidate
 
 				# Check if the word has already been used				
 				%used_words = %{$_[1]};	# The reference to the hash table of used words will be passed as an argument
-				if( ! defined $used_words{$key}){		# If the word has NOT already been used
-					$highest_freq = $freq;		# If so it is the new highest frequency
-     				$most_common_word = $key;	# Save the most commmon word for output
+				if( defined $used_words{$key}){		# If the word has been used
+					next;	# Already used this word, go to the next item
 				}
-			}
-		} elsif ($freq > $highest_freq){		# Check if this item has the highest frequency
+
+		} 
+		if ($freq > $highest_freq){		# Check if this item has the highest frequency
      		$highest_freq = $freq;		# If so it is the new highest frequency
      		$most_common_word = $key;	# Save the most commmon word for output
 
      	} elsif ($freq == $highest_freq) {	# Pick randomly if two words have the same frequency
-     		my $fate = rand(2);			# Binary random number
+     		my $fate = int(rand(2));			# Binary random number
      		if($fate == 0){				# If zero, change most common word
      			$highest_freq = $freq;	# modify frequency
      			$most_common_word = $key;	# save most common word
