@@ -6,7 +6,9 @@
 #										
 #########################################
 
-# Use -a as argument 2 to just print the word and the associated bigram frequencies, use for question 1-5
+# Use -a as argument 2 to just print the word and the associated bigram frequencies. Use for question 1-5.
+# Use -b as argument 2 to print basic average song names, WITHOUT stop words removed. Use for questions 6-10.
+# Use -c as argument 2 to print average song names WITH stop words removed. Use for questions 10-15.
 
 use strict;
 use warnings;
@@ -20,6 +22,9 @@ print "CSCI 305 Lab 1 submitted by $name and $partner.\n\n";
 if( ! defined $ARGV[0]) {
     print STDERR "You must specify the file name as the argument.\n";
     exit 4;
+} elsif (! defined $ARGV[1]){
+	print "You must specify a second argument for lab questions\n";
+	exit 4;
 }
 
 # Opens the file and assign it to handle INFILE
@@ -42,7 +47,7 @@ while($line = <INFILE>) {
 
 		#Eliminate text after these characters, per lab step 2
 		$title =~ s/[\(\[\{\\\/\_\-\:\"\`\+\=\*]+.*//;
-		$title =~ s/feat.*//;
+		$title =~ s/\bfeat.*//;
 
 		#Eliminate punctuation, Lab Step 3
 		$title =~ s/[\?\xBF\!\xA1\.;&\$\@%#\|]+//g;
@@ -60,7 +65,7 @@ while($line = <INFILE>) {
 			# Add each line to double hash table
 		 	&add_line_to_hashtable($title);	 
 
-		 	# Update number of valid titles foudn
+		 	# Update number of valid titles found
 	 		$title_count++;
 	 	}
 	}
@@ -71,6 +76,7 @@ close INFILE;
 
 # At this point (hopefully) you will have finished processing the song 
 # title file and have populated your data structure of bigram counts.
+
 print "File parsed. Bigram model built.\n";
 
 #Print out the number of titles we found
@@ -90,7 +96,7 @@ do {
 	if($input ne "" && $input ne "q"){
 
 		# Argument parse tree
-		if(defined $ARGV[1] && $ARGV[1] eq "-a"){	# frequency counting argument enabled, print all bigram frequencies
+		if($ARGV[1] eq "-a"){	# frequency counting argument enabled, print all bigram frequencies, questions 1-5
 			my $next_bigram =  &mcw($input);	# print the most commmon word to follow input word
 
 			# Check to make sure that the word exists in the hash table
@@ -98,18 +104,19 @@ do {
 				&print_bigrams($input);   # Print out every possible bigram associated with the input word
 				print "   The most common bigram is : " . $next_bigram . ", " . $highest_freq . "\n";
 			} else {
-				print "***ERROR Empty String\n";
+				print "*ERROR* String not present\n";
 			}
 
-			
-
-		} else {
+		} elsif ($ARGV[1] eq "-b" || $ARGV[1] eq "-c"){	# For answering questions 6 - 15
 			my $most_common_title = mct($input);
 			print $most_common_title . ", $word_count words\n";
-		}
+		} else {
+			print "Argument 2 undefined!\n"
+		}		
 	}
 	
 } while ($input ne "q");
+
 
 
 
@@ -120,32 +127,42 @@ do {
 #my %word_hashtable;
 sub add_line_to_hashtable {
 	my $song_title = $_[0];
-	my @words = split " ", $song_title;		# Split up song title into separate words to add to hashtable
+	my @words = split /\s+/, $song_title;		# Split up song title into separate words to add to hashtable
+
 	for (my $i = 0; $i < (0 + @words - 1); $i++){	# Only loop up to second-to-last word
 
 		#grab the this and next word from the song title
+		#a, an, and, by, for, from, in, of, on, or, out, the, to, with
 		my $this_word = $words[$i];
 		my $next_word = $words[$i + 1];
-
+		my $check_word = $next_word;
 		# print "$this_word \n";
+        
+        # If -c argument is supplied, eliminate stop words
+        # if($next_word =~ s/\bfor\b|\bthe\b|\ba\b|\ban\b|\band\b|\bby\b|\bfrom\b|\bin\b|\bof\b|\bon\b|\bor\b|\bout\b|\bto\b|\bwith\b//){
 
-		# Check to see if word is already in the hash table.
-		my $hash_value = $word_hashtable{$this_word};
-		if(defined $hash_value){				# If so, put next word into second hashtable
+        if(($check_word =~ s/\bfor\b|\bthe\b|\ba\b|\ban\b|\band\b|\bby\b|\bfrom\b|\bin\b|\bof\b|\bon\b|\bor\b|\bout\b|\bto\b|\bwith\b//) && ($ARGV[1] eq "-c")){
+        	
+       	} else {
 
-			# Check to see if the next word in the bigram is in the second hash table
-			my $freq_count = $word_hashtable{$this_word}{$next_word};
-			
-			if(defined $freq_count){	# If the bigram is already present, increment the frequency counter
-				$word_hashtable{$this_word}{$next_word} = $freq_count + 1;
+        	# Check to see if word is already in the hash table.
+			my $hash_value = $word_hashtable{$this_word};
+			if(defined $hash_value){				# If so, put next word into second hashtable
 
-			} else {					# Otherwise add the next word to the second hash table.
-				$word_hashtable{$this_word}{$next_word} = 0;	# Initialize frequency counter to zero
+				# Check to see if the next word in the bigram is in the second hash table
+				my $freq_count = $word_hashtable{$this_word}{$next_word};
+				
+				if(defined $freq_count){	# If the bigram is already present, increment the frequency counter
+					$word_hashtable{$this_word}{$next_word} = $freq_count + 1;
+
+				} else {					# Otherwise add the next word to the second hash table.
+					$word_hashtable{$this_word}{$next_word} = 0;	# Initialize frequency counter to zero
+				}
+
+			} else	{	# If not put word into first hashtable, and select new second hastable from array
+				$word_hashtable{$this_word} = {$next_word=>0};	# 
 			}
-
-		} else	{	# If not put word into first hashtable, and select new second hastable from array
-			$word_hashtable{$this_word} = {$next_word=>0};	# 
-		}
+		}	
 	}
 }
 
