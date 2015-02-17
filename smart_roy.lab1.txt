@@ -89,5 +89,18 @@ which song title did you find? If not, why not?
 	title: "brush arbors".
 
 
+Question 16: Describe in one to two paragraphs your extension and how it fixed the repeating phrase/word problem.
+	To fix the repeating phrase problem, I prevented the mcw() subroutine from returning words that it had already 
+	returned in this title. This was achieved through the use of a hash table data structure. If a word was used, it
+	was placed into the data structure. Later the mcw() subroutine would check to see if a word key was defined in the
+	hash table in order to set that word as a candidate for the most common word. If a word was found to be already in 
+	the title, the program just skipped that word in its consideration for the most common word.
+		The fix was able to successfully terminate the average song title, but the titles were usually pretty long
+	(sometimes 60-200 words). I'm not really sure how to fix this problem, other than to possibly identify more Stop 
+	Words to eliminate some more common words that end up in similar phrases.
 
+Question 17: Using the starting word “montana”, what song title do you get?
+	montana sacra nova scotia
 
+Question 18: Using the starting word “bob”, what song title do you get?
+	

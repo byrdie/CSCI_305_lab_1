@@ -106,7 +106,7 @@ do {
 			if($next_bigram ne ""){
 				&print_bigrams($input);   # Print out every possible bigram associated with the input word
 				my $dec_freq = $highest_freq + 1;	# Adjust for zero based frequency offset
-				print "   The most common bigram is : " . $next_bigram . ", " . $dec_freq . "\n";
+				print "   The most common bigram is : " . $next_bigram . ", " . $dec_freq . " times\n";
 			} else {
 				print "*ERROR* String not present\n";
 			}
@@ -121,6 +121,8 @@ do {
 			print "Argument 2 undefined!\n"
 		}		
 	}
+
+	print "\n";
 	
 } while ($input ne "q");
 
@@ -175,14 +177,17 @@ sub add_line_to_hashtable {
 sub print_bigrams {
 	my $first_word = $_[0];
 	my $num_bigrams = 0;
+	my $num_matches = 0;
 
 	foreach my $key (keys %{$word_hashtable{$first_word}}){
 		my $bigram_freq = $word_hashtable{$first_word}{$key} + 1;
 		print $key . "==>" . $bigram_freq . ", ";	# frequency is zero-based so add 1
 		$num_bigrams++;
+		$num_matches += $bigram_freq;
 	}
 
-	print "\n\n   Total number of bigrams found is: " . $num_bigrams . "\n";
+	print "   Total number of bigrams found is: " . $num_bigrams . "\n";
+	print "   Total matches: " . $num_matches . "\n";
 
 	return;
 
