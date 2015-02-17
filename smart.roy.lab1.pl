@@ -80,9 +80,9 @@ my $input = <STDIN>;
 chomp($input);
 print "\n";	
 while ($input ne "q"){
+	for $input(keys %{$word_hashtable{}})
 	# Replace these lines with some useful code
-	print "Not yet implemented.  Goodbye.\n";
-	$input = 'q';
+	for 
 }
 
 
@@ -94,6 +94,7 @@ while ($input ne "q"){
 # And another array of hash tables that contain the associated bigrams for all the words in data set. 
 #The values in the second hashtable correspond to frequecies of various bigrams.
 # Need a list of words as a parameter
+#my %word_hashtable;
 sub add_line_to_hashtable {
 	my ($song_title) = @_;
 	my @words = split " ", $song_title;		# Split up song title into separate words to add to hashtable
@@ -113,20 +114,21 @@ sub add_line_to_hashtable {
 		if(defined $hash_value){				# If so, put next word into second hashtable
 
 			# Check to see if the next word in the bigram is in the second hash table
-			my $freq_count = $bigram_hash_array[$hash_value]{$next_word};
+			my $freq_count = $word_hashtable{$this_word}{$next_word};
 			
 			if(defined $freq_count){	# If the bigram is already present, increment the frequency counter
-				$bigram_hash_array[$hash_value] = $freq_count + 1;
+				$word_hashtable{$this_word}{$next_word} = $freq_count + 1;
 				print "Flag 1\n";
 			} else {					# Otherwise add the next word to the second hash table.
-				$bigram_hash_array[$hash_value] = 0;	# Initialize frequency counter to zero
+				$word_hashtable{$this_word}{$next_word} = 0;	# Initialize frequency counter to zero
 				print "Flag 2\n";
 			}
 
 		} else	{	# If not put word into first hashtable, and select new second hastable from array
-			$word_hashtable{$this_word} = $bigram_hash_index;	# set value to the index of the second hash table in the array
-			$bigram_hash_array[$bigram_hash_index]{$next_word} = 0;		# Initialize frequency counter to zero
-			$bigram_hash_index++;								# Increment index of second hashtable array
+			$word_hashtable{$this_word} ={
+			$next_word=>0};	# set value to the index of the second hash table in the array
+			#$bigram_hash_array[$bigram_hash_index]{$next_word} = 0;		# Initialize frequency counter to zero
+			#$bigram_hash_index++;								# Increment index of second hashtable array
 			print "Flag 3\n";
 		}
 	}
