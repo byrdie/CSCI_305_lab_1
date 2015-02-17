@@ -52,7 +52,7 @@ while(my $line = <INFILE>) {
 		 	# Convert all titles to lower case, Lab Step 5
 		 	$title = lc $title;
  	
-	 		print $title . "\n";
+	 		# print $title . "\n";
 
 			# Add each line to double hash table
 		 	&add_line_to_hashtable($title);	 
@@ -73,17 +73,21 @@ close INFILE;
 # At this point (hopefully) you will have finished processing the song 
 # title file and have populated your data structure of bigram counts.
 print "File parsed. Bigram model built.\n\n";
-
+my $input;	# Global variable to test input
 
 # User control loop
-print "Enter a word [Enter 'q' to quit]: ";
-my $input = <STDIN>;
-chomp($input);
 print "\n";	
-while ($input ne "q"){
-	# for $input(keys %{$word_hashtable{}})
-	# Replace these lines with some useful code
-}
+do {
+	print "Enter a word [Enter 'q' to quit]: ";
+
+	$input = <STDIN>;
+	chomp($input);
+
+	if($input ne "" && $input ne "q"){
+		print &mcw($input) . "\n";
+	}
+	
+} while ($input ne "q");
 
 
 
@@ -120,12 +124,36 @@ sub add_line_to_hashtable {
 			}
 
 		} else	{	# If not put word into first hashtable, and select new second hastable from array
-			$word_hashtable{$this_word} ={$next_word=>0};	# set value to the index of the second hash table in the array
+			$word_hashtable{$this_word} = {$next_word=>0};	# 
 		}
 	}
 }
 
 # Finds the highest frequency words and puts them into a hash table
-sub trim_hashtable {
-	
+sub mcw {
+
+	my $first_word = $_[0];
+
+	my $highest_freq = 0;
+	my $most_common_word = "****ERROR EMPTY STRING";
+
+	#Loop through each item in the hashtable
+	foreach my $key (keys %{$word_hashtable{$first_word}}){
+
+		# Retrieve frequency value stored in the hash table
+		my $freq = $word_hashtable{$input}{$key};
+
+     	if($freq > $highest_freq){	# Check if this item has the highest frequency
+     		$highest_freq = $freq;	# If so it is the new highest frequency
+     		$most_common_word = $key;	# Save the most commmon word for output
+     	} elsif ($freq == $highest_freq) {	# Pick randomly if two words have the same frequency
+     		my $fate = rand(2);	# Binary random number
+     		if($fate == 0){		# If zero, change most common word
+     			$highest_freq = $freq;	
+     			$most_common_word = $key;	
+     		}
+     	}
+	}
+
+	return $most_common_word;
 }
