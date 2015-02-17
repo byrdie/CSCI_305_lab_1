@@ -6,6 +6,8 @@
 #										
 #########################################
 
+# Use -f as argument 2 to just print the word and the associated bigram frequencies
+
 use strict;
 use warnings;
 
@@ -15,7 +17,7 @@ my $partner = "<Nevin Leh>";
 print "CSCI 305 Lab 1 submitted by $name and $partner.\n\n";
 
 # Checks for the argument, fail if none given
-if($#ARGV != 0) {
+if($#ARGV < 0) {
     print STDERR "You must specify the file name as the argument.\n";
     exit 4;
 }
@@ -25,9 +27,9 @@ open(INFILE, $ARGV[0]) or die "Cannot open $ARGV[0]: $!.\n";
 
 
 # YOUR VARIABLE DEFINITIONS HERE...
-my $title_count = 0;
-my %word_hashtable;
-my %bigram_hashtable;
+my $title_count = 0;	# Count of valid titles found in the input file
+my %word_hashtable;		# double hashtable to hold words and their possible bigrams
+my $highest_freq;		# highest frequency occurance of current bigram ()
 
 
 # This loops through each line of the file
@@ -57,8 +59,6 @@ while(my $line = <INFILE>) {
 			# Add each line to double hash table
 		 	&add_line_to_hashtable($title);	 
 
-
-
 	 		$title_count++;
 	 	}
 	}
@@ -83,8 +83,23 @@ do {
 	$input = <STDIN>;
 	chomp($input);
 
+	# Only take action if input is not empty string or not exiting.
 	if($input ne "" && $input ne "q"){
-		print &mcw($input) . "\n";
+		
+
+		if(defined $ARGV[1] && $ARGV[1] eq "-f"){	# frequency counting argument enabled, print all bigram frequencies
+			my $next_bigram =  &mcw($input);	# print the most commmon word to follow input word
+
+			# Check to make sure that the word exists in the hash table
+			if($next_bigram ne ""){
+				print $next_bigram . "	" . $highest_freq . "\n";
+			} else {
+				print "***ERROR Empty String\n";
+			}
+
+			# Print out every possible bigram associated with the input word
+			&print_bigrams($input);
+		}
 	}
 	
 } while ($input ne "q");
@@ -129,13 +144,29 @@ sub add_line_to_hashtable {
 	}
 }
 
+# Prints out all of the possible bigrams of the supplied word and their frequecies
+sub print_bigrams {
+	my $first_word = $_[0];
+	my $num_bigrams = 0;
+
+	foreach my $key (keys %{$word_hashtable{$first_word}}){
+		print "    " . $key . "==>" . $word_hashtable{$input}{$key} . "\n";
+		$num_bigrams++;
+	}
+
+	print "		Total number of bigrams found is: " . $num_bigrams . "\n";
+
+	return;
+
+}
+
 # Finds the highest frequency words and puts them into a hash table
 sub mcw {
 
 	my $first_word = $_[0];
 
-	my $highest_freq = 0;
-	my $most_common_word = "****ERROR EMPTY STRING";
+	$highest_freq = -1;
+	my $most_common_word = "";
 
 	#Loop through each item in the hashtable
 	foreach my $key (keys %{$word_hashtable{$first_word}}){
@@ -143,17 +174,33 @@ sub mcw {
 		# Retrieve frequency value stored in the hash table
 		my $freq = $word_hashtable{$input}{$key};
 
-     	if($freq > $highest_freq){	# Check if this item has the highest frequency
-     		$highest_freq = $freq;	# If so it is the new highest frequency
+     	if($freq > $highest_freq){		# Check if this item has the highest frequency
+     		$highest_freq = $freq;		# If so it is the new highest frequency
      		$most_common_word = $key;	# Save the most commmon word for output
      	} elsif ($freq == $highest_freq) {	# Pick randomly if two words have the same frequency
-     		my $fate = rand(2);	# Binary random number
-     		if($fate == 0){		# If zero, change most common word
-     			$highest_freq = $freq;	
-     			$most_common_word = $key;	
+     		my $fate = rand(2);			# Binary random number
+     		if($fate == 0){				# If zero, change most common word
+     			$highest_freq = $freq;	# modify frequency
+     			$most_common_word = $key;	# save most common word
      		}
      	}
 	}
 
 	return $most_common_word;
+}
+
+# Find the most common song title up to 20 words
+sub mct {
+	my $title = "";		# allocate space for title
+	my $this_word = $_[0];	# The first word is a user supplied argument
+
+	for(my $i = 0; $i < 20; $i++){
+
+		# Get next word in the bigram
+		my $next_word = &mcw($this_word);
+
+		if($next_word ne ""){	# The empty string represents a word defined in the hash table.
+
+		}
+	}
 }
