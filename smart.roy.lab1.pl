@@ -73,20 +73,21 @@ close INFILE;
 # title file and have populated your data structure of bigram counts.
 print "File parsed. Bigram model built.\n\n";
 
-
+do{
+	my $input  = <STDIN>;
+    chomp($input);
 # User control loop
-print "Enter a word [Enter 'q' to quit]: ";
-my $input = <STDIN>;
-chomp($input);
-print "\n";	
-while ($input ne "q"){
+
+    
+    print "\n";	
+
 	foreach my  $key (keys %{$word_hashtable{$input}}){
-     print $key . "==>" . $word_hashtable{$input}{$key} . "\n";
-	}
-	$input='q';
+
+        print $key . "==>" . $word_hashtable{$input}{$key} . "\n";
+    }
 	# Replace these lines with some useful code
-	
-}
+}until($input ne "q" );	
+
 
 
 
