@@ -1,0 +1,21 @@
+Roy Smart
+CSCI 305 Concepts of Programming Languages
+Lab 1
+February 16, 2015
+
+Question 1: Which word most often follows the word “happy”?
+	The word "birthday" most often follows "happy".
+
+Question 2: Which word most often follows the word "sad"?
+	The word "song" most often follows the word "sad".
+
+Question 3: How many different (unique) words follow the word "computer"?
+	58 different words follow the word "computer".
+
+Question 4: Which word most often follows the word "computer"?
+	The word "love" most often follows the word "computer".
+
+Question 5: How many times does this word follow "computer"?
+	The word "love" follows "computer" 12 times.
+
+
