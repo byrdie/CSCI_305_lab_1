@@ -41,7 +41,7 @@ while(my $line = <INFILE>) {
 
 		#Eliminate text after these characters, per lab step 2
 		$title =~ s/[\(\[\{\\\/\_\-\:\"\`\+\=\*]+.*//;
-		#$title =~ s/\bfeat.\b*//;
+		$title =~ s/\bfeat.\b*//;
 
 		#Eliminate punctuation, Lab Step 3
 		$title =~ s/[\?\xBF\!\xA1\.;&\$\@%#\|]+//g;
@@ -124,12 +124,12 @@ sub add_line_to_hashtable {
 		#a, an, and, by, for, from, in, of, on, or, out, the, to, with
 		my $this_word = $words[$i];
 		my $next_word = $words[$i + 1];
-
+        my $check_word=$words[$i+1];
 		# print "$this_word \n";
         
-       # if($next_word !~ /a|an|and|\bfor\b|from|in|of|on|or|out|the|to|with|/){
+        if($next_word =~ s/\bfor\b|\bthe\b|\ba\b|\ban\b|\band\b|\bby\b|\bfrom\b|\bin\b|\bof\b|\bon\b|\bor\b|\bout\b|\bto\b|\bwith\b//){
 
-       # }else{
+       }else{
 
         	
 		# Check to see if word is already in the hash table.
@@ -149,7 +149,7 @@ sub add_line_to_hashtable {
 			} else	{	# If not put word into first hashtable, and select new second hastable from array
 				$word_hashtable{$this_word} = {$next_word=>0};	# 
 			}
-		   # }	
+		   }	
 	}
 }
 
