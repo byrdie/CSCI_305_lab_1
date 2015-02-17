@@ -9,6 +9,7 @@
 # Use -a as argument 2 to just print the word and the associated bigram frequencies. Use for question 1-5.
 # Use -b as argument 2 to print basic average song names, WITHOUT stop words removed. Use for questions 6-10.
 # Use -c as argument 2 to print average song names WITH stop words removed. Use for questions 10-15.
+# Use -d as arg 2 to print average song names with repeats eliminated. Use for questions 16-20.
 
 use strict;
 use warnings;
@@ -94,8 +95,10 @@ do {
 	$input = <STDIN>;
 	chomp($input);
 
-	# Only take action if input is not empty string or not exiting.
-	if($input ne "" && $input ne "q"){
+	# Option to change mode of the program
+	if ($input eq "-a" || $input eq "-b" ||$input eq "-c" ||$input eq "-d"){
+		$ARGV[1] = $input;
+	} elsif($input ne "" && $input ne "q"){	# Not empty string or exiting
 
 		# Argument parse tree
 		if($ARGV[1] eq "-a"){	# frequency counting argument enabled, print all bigram frequencies, questions 1-5
@@ -104,13 +107,17 @@ do {
 			# Check to make sure that the word exists in the hash table
 			if($next_bigram ne ""){
 				&print_bigrams($input);   # Print out every possible bigram associated with the input word
-				print "   The most common bigram is : " . $next_bigram . ", " . $highest_freq . "\n";
+				my $dec_freq = $highest_freq + 1;	# Adjust for zero based frequency offset
+				print "   The most common bigram is : " . $next_bigram . ", " . $dec_freq . "\n";
 			} else {
 				print "*ERROR* String not present\n";
 			}
 
 		} elsif ($ARGV[1] eq "-b" || $ARGV[1] eq "-c"){	# For answering questions 6 - 15
-			my $most_common_title = mct($input);
+			my $most_common_title = &mct($input);
+			print $most_common_title . ", $word_count words\n";
+		} elsif($ARGV[1] eq "-d"){		# For answering question 16-20
+			my $most_common_title = &mct_no_repeat($input);
 			print $most_common_title . ", $word_count words\n";
 		} else {
 			print "Argument 2 undefined!\n"
@@ -140,10 +147,8 @@ sub add_line_to_hashtable {
 		my $check_word = $next_word;
 		# print "$this_word \n";
         
-        # If -c argument is supplied, eliminate stop words
-        # if($next_word =~ s/\bfor\b|\bthe\b|\ba\b|\ban\b|\band\b|\bby\b|\bfrom\b|\bin\b|\bof\b|\bon\b|\bor\b|\bout\b|\bto\b|\bwith\b//){
-
-        if(($check_word =~ s/\bfor\b|\bthe\b|\ba\b|\ban\b|\band\b|\bby\b|\bfrom\b|\bin\b|\bof\b|\bon\b|\bor\b|\bout\b|\bto\b|\bwith\b//) && ($ARGV[1] eq "-c")){
+        # If -c or -d argument is supplied, eliminate stop words for the second word in the bigram
+        if(($check_word =~ s/\bfor\b|\bthe\b|\ba\b|\ban\b|\band\b|\bby\b|\bfrom\b|\bin\b|\bof\b|\bon\b|\bor\b|\bout\b|\bto\b|\bwith\b//) && (($ARGV[1] eq "-c") || ($ARGV[1] eq "-d"))){
         	
        	} else {
 
@@ -161,8 +166,8 @@ sub add_line_to_hashtable {
 					$word_hashtable{$this_word}{$next_word} = 0;	# Initialize frequency counter to zero
 				}
 
-			} else	{	# If not put word into first hashtable, and select new second hastable from array
-				$word_hashtable{$this_word} = {$next_word=>0};	# 
+			} else	{	# If not put word into double hashtable and initialize frequency to zero
+				$word_hashtable{$this_word} = {$next_word=>0};
 			}
 		}	
 	}
@@ -175,11 +180,11 @@ sub print_bigrams {
 
 	foreach my $key (keys %{$word_hashtable{$first_word}}){
 		my $bigram_freq = $word_hashtable{$first_word}{$key} + 1;
-		print "    " . $key . "==>" . $bigram_freq . "\n";	# frequency is zero-based so add 1
+		print "    " . $key . "==>" . $bigram_freq . ", ";	# frequency is zero-based so add 1
 		$num_bigrams++;
 	}
 
-	print "   Total number of bigrams found is: " . $num_bigrams . "\n";
+	print "\n\n   Total number of bigrams found is: " . $num_bigrams . "\n";
 
 	return;
 
@@ -189,7 +194,7 @@ sub print_bigrams {
 sub mcw {
 
 	my $first_word = $_[0];
-
+	my %used_words;
 	$highest_freq = -1;
 	my $most_common_word = "";
 
@@ -199,7 +204,18 @@ sub mcw {
 		# Retrieve frequency value stored in the hash table
 		my $freq = $word_hashtable{$first_word}{$key};
 
-     	if($freq > $highest_freq){		# Check if this item has the highest frequency
+		# Determine if the current word has the highest frequency
+		if ($ARGV[1] eq "-d") {		# For the last step, eliminate repeating words
+			if ($freq > $highest_freq){	# Only worry about repeats if the current word is a valid candidate
+
+				# Check if the word has already been used				
+				%used_words = %{$_[1]};	# The reference to the hash table of used words will be passed as an argument
+				if( ! defined $used_words{$key}){		# If the word has NOT already been used
+					$highest_freq = $freq;		# If so it is the new highest frequency
+     				$most_common_word = $key;	# Save the most commmon word for output
+				}
+			}
+		} elsif ($freq > $highest_freq){		# Check if this item has the highest frequency
      		$highest_freq = $freq;		# If so it is the new highest frequency
      		$most_common_word = $key;	# Save the most commmon word for output
 
@@ -241,4 +257,35 @@ sub mct {
 	$word_count = $count + 1; # update word count
 
 	return $title;
+}
+
+# Find the most common song title without repeats
+sub mct_no_repeat {
+	my $this_word = $_[0];	# The first word is a user supplied argument
+	my $title = $this_word;		# allocate space for title and initialize to first word
+	my %used_words;			# 1D hash table for storing words already used in the average song title
+
+	# Loop until a full song title is developed
+	my $i = 0;
+	while($i < 1000){
+
+		# Insert current word into hash table to ensure no repeats
+		$used_words{$this_word} = 0;	# Can keep value as zero, since we only check if it is defined.
+
+		# Get next word in the bigram from the double hash table, pass hash table of alredy used words
+		my $next_word = &mcw($this_word, \%used_words);	# Pass reference to the hash table of used words
+
+		if($next_word ne ""){	# If the next word exists
+			$title = $title . " " . $next_word;
+			$this_word = $next_word;
+
+		} else {	# otherwise we're done, break out of the loop
+			last;
+		}
+		$i++;	# Increment word count variable
+	}
+
+	$word_count = $i + 1; # update word count
+
+	return $title;	
 }
