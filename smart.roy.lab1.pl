@@ -80,9 +80,12 @@ my $input = <STDIN>;
 chomp($input);
 print "\n";	
 while ($input ne "q"){
-	for $input(keys %{$word_hashtable{}})
+	foreach my  $key (keys %{$word_hashtable{$input}}){
+     print $key . "==>" . $word_hashtable{$input}{$key} . "\n";
+	}
+	$input='q';
 	# Replace these lines with some useful code
-	for 
+	
 }
 
 
