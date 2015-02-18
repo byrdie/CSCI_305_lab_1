@@ -1,8 +1,8 @@
 ######################################### 	
 #    CSCI 305 - Programming Lab #1		
 #										
-#  < Roy Smart >			
-#  < roytsmart@gmail.com >			
+#  <Nevin Leh >			
+#  < nevinleh@gmail.com>			
 #										
 #########################################
 
@@ -24,8 +24,8 @@ if( ! defined $ARGV[0]) {
     print STDERR "You must specify the file name as the argument.\n";
     exit 4;
 } elsif (! defined $ARGV[1]){
-	print "You must specify a second argument for lab questions\n";
-	exit 4;
+	$ARGV[1]="-d";
+	
 }
 
 # Opens the file and assign it to handle INFILE
@@ -84,14 +84,21 @@ print "File parsed. Bigram model built.\n";
 
 #Print out the number of titles we found
 print $title_count . " valid song titles found\n\n";
+#Print options
+print "Enter -a for questions 1-5\n";
+print "Enter -b for questions 6-10\n";
+print "Enter -c for questions 10-15\n";
+print "Enter -d for questions 16-20 [Default]\n\n";
 
 my $input;	# Global variable to test input
 
 # User control loop
 print "\n";	
 do {
-	print "Enter a word [Enter 'q' to quit]: ";
+	
+   
 
+    print "Enter a word [Enter 'q' to quit]: ";
 	$input = <STDIN>;
 	chomp($input);
 
@@ -108,7 +115,7 @@ do {
 			if($next_bigram ne ""){
 				&print_bigrams($input);   # Print out every possible bigram associated with the input word
 				my $dec_freq = $highest_freq + 1;	# Adjust for zero based frequency offset
-				print "   The most common bigram is : " . $next_bigram . ", " . $dec_freq . "\n";
+				print "   The most common bigram is : " . $next_bigram . ", " . $dec_freq . " times\n";
 			} else {
 				print "*ERROR* String not present\n";
 			}
@@ -123,6 +130,8 @@ do {
 			print "Argument 2 undefined!\n"
 		}		
 	}
+
+	print "\n";
 	
 } while ($input ne "q");
 
@@ -177,14 +186,17 @@ sub add_line_to_hashtable {
 sub print_bigrams {
 	my $first_word = $_[0];
 	my $num_bigrams = 0;
+	my $num_matches = 0;
 
 	foreach my $key (keys %{$word_hashtable{$first_word}}){
 		my $bigram_freq = $word_hashtable{$first_word}{$key} + 1;
-		print "    " . $key . "==>" . $bigram_freq . ", ";	# frequency is zero-based so add 1
+		print $key . "==>" . $bigram_freq . ", ";	# frequency is zero-based so add 1
 		$num_bigrams++;
+		$num_matches += $bigram_freq;
 	}
 
-	print "\n\n   Total number of bigrams found is: " . $num_bigrams . "\n";
+	print "   Total number of bigrams found is: " . $num_bigrams . "\n";
+	print "   Total matches: " . $num_matches . "\n";
 
 	return;
 
@@ -206,21 +218,22 @@ sub mcw {
 
 		# Determine if the current word has the highest frequency
 		if ($ARGV[1] eq "-d") {		# For the last step, eliminate repeating words
-			if ($freq > $highest_freq){	# Only worry about repeats if the current word is a valid candidate
 
 				# Check if the word has already been used				
 				%used_words = %{$_[1]};	# The reference to the hash table of used words will be passed as an argument
-				#if( ! defined $used_words{$key}){		# If the word has NOT already been used
-					$highest_freq = $freq;		# If so it is the new highest frequency
-     				$most_common_word = $key;	# Save the most commmon word for output
-				#}
-			}
-		} elsif ($freq > $highest_freq){		# Check if this item has the highest frequency
+
+				if( defined $used_words{$key}){		# If the word has been used
+					next;	# Already used this word, go to the next item
+				}
+
+		} 
+		if ($freq > $highest_freq){		# Check if this item has the highest frequency
+
      		$highest_freq = $freq;		# If so it is the new highest frequency
      		$most_common_word = $key;	# Save the most commmon word for output
 
      	} elsif ($freq == $highest_freq) {	# Pick randomly if two words have the same frequency
-     		my $fate = rand(2);			# Binary random number
+     		my $fate = int(rand(2));			# Binary random number
      		if($fate == 0){				# If zero, change most common word
      			$highest_freq = $freq;	# modify frequency
      			$most_common_word = $key;	# save most common word
