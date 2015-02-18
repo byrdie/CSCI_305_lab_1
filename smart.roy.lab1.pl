@@ -195,7 +195,7 @@ sub print_bigrams {
 		$num_matches += $bigram_freq;
 	}
 
-	print "   Total number of bigrams found is: " . $num_bigrams . "\n";
+	print "\n   Total number of bigrams found is: " . $num_bigrams . "\n";
 	print "   Total matches: " . $num_matches . "\n";
 
 	return;

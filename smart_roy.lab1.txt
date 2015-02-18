@@ -99,8 +99,53 @@ Question 16: Describe in one to two paragraphs your extension and how it fixed t
 	(sometimes 60-200 words). I'm not really sure how to fix this problem, other than to possibly identify more Stop 
 	Words to eliminate some more common words that end up in similar phrases.
 
+
 Question 17: Using the starting word “montana”, what song title do you get?
 	montana sacra nova scotia
 
+
 Question 18: Using the starting word “bob”, what song title do you get?
-	
+	bob marley vs heroin revisited part 2 me down south side story ends burning up your love you are my heart is it all 
+	i don't know what do that way home again kathleen mavourneen
+
+
+Question 19: Using the starting word “bob’ again, do you get the same title? If no, what do you get? Try it a third 
+time. Explain why the title might differ each time.
+	The title generated using the word "bob" is not the same each time. This is because of the entropy introduced
+	by randomly selecting the Most Common Word in the event of a tie in bigram frequency. So if two words occur the
+	same amount, the program has a 50/50 chance of selecting either of them.
+
+
+Question 20: Share your favorite song title that you have found.
+	My favorite partial titles were: "my heart attack ships", "boom bap yo", "black magic carpet ride", and 
+	"honky tonk train song".
+
+
+Question 21: Name something you like about Perl. Explain.
+	I like the simplicity of wrting programs in perl. Since perl borrows a lot of ideas from c, it is easy to read if 
+	you're used to using C-style programming languages like I am. Furthermore it makes things a lot easier than C, 
+	automatically allocating memory for you, and providing advanced data types like the hash table (which was 
+	especially useful in this lab). Finally, the documentation for perl is fairly complete online with lots of
+	good examples and tutorials for learning.
+
+
+Question 22: Name something you dislike about Perl. Explain.
+	Initially I did not like that the compiler would not catch errors in the program for you, leaving you to die in
+	your own self-pity. Then I found you can include the lines "use strict;" and "use warinings;" which made perl 
+	act similar to a C-style compliler. Now I have no complaints.
+
+
+Question 23: Did you enjoy this lab? Which aspects did you like and/or dislike?
+	I definetly enjoyed the combined challenge of learning a new language by writing a fairly complicated program
+	that I hadn't already done. I enjoyed learning all about regular expressions and the powerful string 
+	processing abilities of perl. I did not like how difficult it was to ascertain that the program was working
+	correctly. It would have been really useful to have more self-checks to help ensure the proper operation of
+	the program.
+
+
+Question 24: Approximately how many hours did you spend on this lab?
+	Don't even ask. At least 15 hours.
+
+
+Question 25: Do you think you will use Perl again? For which type(s) of project(s)?
+	I would definetly consider perl for any type of string processing application.
